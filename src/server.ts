@@ -30,6 +30,17 @@ app.post('/movies', async (req, res) => {
 
     // Converte a data recebida e grava o novo filme no banco.
     try {
+
+        // Verifica no banco se já existe um filme com o nome que está sendo enviado.
+        const movieWhitSameTitle = await prisma.movie.findFirst({
+            where: {
+                title: {equals: title, mode: 'insensitive'} // Comparação insensível a maiúsculas/minúsculas
+            },
+        });
+        if (movieWhitSameTitle) {
+            return res.status(409).send({ message: 'filme com o mesmo título já existe' });
+        }
+
         await prisma.movie.create({
             data: {
                 title: title,
