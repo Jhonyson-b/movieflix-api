@@ -1,12 +1,15 @@
+// Gera o Prisma Client usado pela aplicação para consultar o banco.
 generator client {
   provider = "prisma-client-js"
 }
 
+// Define a conexão com o PostgreSQL usando a variável DATABASE_URL do ambiente.
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
+// Representa os filmes; @@map associa este modelo à tabela existente chamada movies.
 model Movie {
   id           Int        @id @default(autoincrement())
   title        String?    @db.VarChar(100)
@@ -14,24 +17,29 @@ model Movie {
   genre_id     Int?
   language_id  Int?
   oscar_count  Int?
+  // Relações opcionais com os modelos de gênero e idioma, ligadas pelas chaves estrangeiras acima.
   genres       Genre?    @relation(fields: [genre_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_genre")
   languages    Language? @relation(fields: [language_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_language")
 
-  @@map("movies") //@@ = modifica tabela no banco de dados | @ = modifica coluna no banco de dados
+  @@map("movies")
 }
 
+// Representa os gêneros e permite acessar os filmes associados a cada gênero.
 model Genre {
   id     Int      @id @default(autoincrement())
   name   String?  @db.VarChar(100)
   movies Movie[]
 
+// Mantém o nome da tabela existente no PostgreSQL.
   @@map("genres")
 }
 
+// Representa os idiomas e permite acessar os filmes associados a cada idioma.
 model Language {
   id     Int      @id @default(autoincrement())
   name   String?  @db.VarChar(100)
   movies Movie[]
 
+// Mantém o nome da tabela existente no PostgreSQL.
   @@map("languages")
 }
