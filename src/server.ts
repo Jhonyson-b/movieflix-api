@@ -1,5 +1,7 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from './swagger.json' with { type: 'json' };
 
 // Define a porta HTTP, cria a aplicação Express e prepara o acesso ao banco pelo Prisma.
 const port = 3000;
@@ -8,6 +10,8 @@ const prisma = new PrismaClient();
 
 // Permite que as rotas interpretem corpos de requisição enviados em JSON.
 app.use(express.json());
+// Configura o Swagger UI para documentação da API.
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Lista os filmes em ordem alfabética e inclui os dados relacionados de gênero e idioma.
 app.get('/movies', async (_, res) => {
