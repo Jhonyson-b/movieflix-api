@@ -1,6 +1,7 @@
 // Gera o Prisma Client usado pela aplicação para consultar o banco.
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 // Define a conexão com o PostgreSQL usando a variável DATABASE_URL do ambiente.
